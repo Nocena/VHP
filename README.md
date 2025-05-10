@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Verified Human Protocol (VHP)
 
-## Getting Started
+A Web3 CAPTCHA alternative that verifies users through challenge-based activities or Nocena profile verification.
 
-First, run the development server:
+## Installation
 
 ```bash
-npm run dev
+npm install @nocena/vhp
 # or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm add @nocena/vhp
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Quick Start
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```jsx
+import { VHPCaptcha } from '@nocena/vhp';
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+function App() {
+  const handleVerified = (token) => {
+    // User has been verified
+    console.log('Verification token:', token);
+  };
 
-## Learn More
+  const handleFailed = (error) => {
+    console.error('Verification failed:', error);
+  };
 
-To learn more about Next.js, take a look at the following resources:
+  return (
+    <VHPCaptcha
+      onVerified={handleVerified}
+      onFailed={handleFailed}
+    />
+  );
+}
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Features
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- 🔐 Web3-based human verification
+- 📸 Challenge-based verification (photo/video/selfie)
+- 👤 Nocena profile login option
+- 🪙 Token rewards for successful verification
+- 🎨 Customizable appearance
+- 📱 Mobile-friendly
 
-## Deploy on Vercel
+## API
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### VHPCaptcha Props
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Prop | Type | Description | Default |
+|------|------|-------------|---------|
+| onVerified | `(token: string) => void` | Callback when verification succeeds | Required |
+| onFailed | `(error: string) => void` | Callback when verification fails | Optional |
+| apiEndpoint | `string` | Custom API endpoint for verification | `/api/vhp/verify` |
+| className | `string` | Additional CSS classes | `''` |
+
+## Development
+
+```bash
+# Install dependencies
+pnpm install
+
+# Run development server
+pnpm dev
+
+# Build the package
+pnpm build:package
+```
+
+## License
+
+MIT © Nocena
