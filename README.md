@@ -56,16 +56,72 @@ function App() {
 
 ## Development
 
+### Prerequisites
+
+The VHP component uses camera access for challenge verification. Due to browser security requirements, camera access only works in secure contexts (HTTPS). For local development, you'll need to set up HTTPS.
+
+### Setting up HTTPS for Local Development
+
+1. **Install mkcert** (for creating local SSL certificates):
+   ```bash
+   # macOS
+   brew install mkcert
+   brew install nss # if you use Firefox
+   
+   # Windows
+   choco install mkcert
+   
+   # Linux
+   sudo apt install libnss3-tools
+   # Then download and install mkcert from GitHub
+   ```
+
+2. **Create local certificates**:
+   ```bash
+   # Install the local CA
+   mkcert -install
+   
+   # Create certificate files in your project
+   mkdir certificates
+   cd certificates
+   mkcert localhost
+   ```
+
+3. **Run the HTTPS development server**:
+   ```bash
+   # Install dependencies
+   pnpm install
+   
+   # Run development server with HTTPS
+   pnpm dev:https
+   ```
+
+4. **Access the app** at `https://localhost:3000`
+   
+   Note: Your browser may show a security warning about the self-signed certificate. This is normal for local development - just proceed to the site.
+
+### Regular Development
+
 ```bash
 # Install dependencies
 pnpm install
 
-# Run development server
+# Run development server (HTTP - camera features won't work)
 pnpm dev
+
+# Run development server with HTTPS (camera features will work)
+pnpm dev:https
 
 # Build the package
 pnpm build:package
 ```
+
+### Camera Access Requirements
+
+- **HTTPS is required** for camera access in all modern browsers
+- For local development, use the HTTPS setup described above
+- In production, ensure your site is served over HTTPS
+- Users must grant camera permissions when prompted
 
 ## License
 

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import ThematicContainer from './ThematicContainer';
+import ChallengeCompletion from './ChallengeCompletion';
 
 interface Challenge {
   id: string;
@@ -24,9 +25,10 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
   apiEndpoint,
   onBack,
 }) => {
-  const [stage, setStage] = useState<'select' | 'capture'>('select');
+  const [stage, setStage] = useState<'select' | 'capture' | 'success'>('select');
   const [walletAddress, setWalletAddress] = useState('');
   const [selectedChallenge, setSelectedChallenge] = useState<Challenge | null>(null);
+  const [verificationToken, setVerificationToken] = useState<string>('');
 
   // Mock challenges with colors
   const challenges: Challenge[] = [
@@ -57,6 +59,21 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
     setSelectedChallenge(challenge);
     setStage('capture');
   };
+  
+  const handleChallengeComplete = (videoBlob: Blob, selfieBlob: Blob) => {
+    // TODO: Submit to API with wallet address
+    console.log('Challenge completed!', { videoBlob, selfieBlob, walletAddress });
+    
+    // Mock successful verification
+    const mockToken = 'vhp_challenge_' + Math.random().toString(36).substr(2, 9);
+    setVerificationToken(mockToken);
+    setStage('success');
+    
+    // Call onSuccess after showing success state
+    setTimeout(() => {
+      onSuccess(mockToken);
+    }, 2000);
+  };
 
   return (
     <div className="flex flex-col w-full">
@@ -64,7 +81,7 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
       {onBack && (
         <button 
           onClick={onBack} 
-          className="absolute top-4 left-4 text-gray-400 hover:text-white z-10"
+          className="absolute top-0 left-4 text-gray-400 hover:text-white z-10"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -86,7 +103,7 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
 
           {/* Wallet Input Section */}
           <div className="mb-6">
-            <p className="text-base text-gray-300 text-center mb-3 font-thin">
+            <p className="text-sm text-gray-300 text-center mb-3">
               Enter your EVM wallet address if you want to be rewarded with Nocenix
             </p>
             <input
@@ -111,7 +128,7 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
                 onClick={() => handleChallengeSelect(challenge)}
               >
                 {/* Challenge Title */}
-                <div className="text-xl font-thin mb-2">{challenge.title}</div>
+                <div className="text-lg font-light mb-2">{challenge.title}</div>
                 
                 {/* User and Reward Info Row */}
                 <div className="flex items-center justify-between">
@@ -119,7 +136,7 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
                   <div className="flex items-center space-x-3">
                     {/* Profile Picture with Pink Circle */}
                     <div className="relative">
-                      <div className="w-10 h-10 rounded-full border border-nocenaPink p-1">
+                      <div className="w-10 h-10 rounded-full border border-nocenaPink p-0.5">
                         <img 
                           src={challenge.profileImage} 
                           alt={`${challenge.title} challenger`}
@@ -128,14 +145,14 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
                       </div>
                     </div>
                     {/* Challenge Description */}
-                    <span className="text-sm text-gray-300 font-thin">{challenge.description}</span>
+                    <span className="text-sm text-gray-300">{challenge.description}</span>
                   </div>
 
                   {/* Reward Display - Always Pink */}
                   <ThematicContainer
                     asButton={false}
                     color="nocenaPink"
-                    className="px-4 py-1 ml-4"
+                    className="px-4 py-1"
                   >
                     <div className="flex items-center space-x-1">
                       <span className="text-xl font-semibold">1</span>
@@ -150,15 +167,39 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
       )}
 
       {stage === 'capture' && selectedChallenge && (
-        <div className="flex flex-col items-center justify-center py-8">
-          <h2 className="text-xl font-medium text-white mb-4">
-            {selectedChallenge.title}
-          </h2>
-          <p className="text-gray-300 mb-6">
-            {selectedChallenge.description}
-          </p>
-          {/* TODO: Add camera/video capture component here */}
-          <p className="text-sm text-gray-400">Camera capture will go here</p>
+        <ChallengeCompletion
+          challenge={selectedChallenge}
+          walletAddress={walletAddress}
+          onComplete={handleChallengeComplete}
+          onBack={() => setStage('select')}
+        />
+      )}
+
+      {stage === 'success' && (
+        <div className="flex flex-col items-center justify-center py-12">
+          {/* Success Icon */}
+          <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mb-4">
+            <svg className="w-8 h-8 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 6L9 17l-5-5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </div>
+          
+          <h3 className="text-xl font-medium text-green-400 mb-2">Success!</h3>
+          <p className="text-sm text-gray-300 text-center mb-4">Your challenge has been verified</p>
+          
+          {/* Show verification token */}
+          <div className="bg-gray-800/50 rounded-lg px-4 py-2 mb-4">
+            <p className="text-xs text-gray-400">Token:</p>
+            <p className="text-sm text-white font-mono">{verificationToken}</p>
+          </div>
+          
+          {walletAddress && (
+            <p className="text-xs text-gray-400 text-center mb-2">
+              Nocenix will be sent to: {walletAddress.slice(0, 6)}...{walletAddress.slice(-4)}
+            </p>
+          )}
+          
+          <p className="text-xs text-gray-400">Redirecting...</p>
         </div>
       )}
     </div>
