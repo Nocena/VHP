@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import ThematicContainer from './ThematicContainer';
+import ThematicContainer from '../ui/ThematicContainer';
 
 interface VideoRecordingProps {
   onComplete: (videoBlob: Blob) => void;

@@ -1,6 +1,6 @@
 import React from 'react';
-import PrimaryButton from './PrimaryButton';
-import ThematicContainer from './ThematicContainer';
+import PrimaryButton from '../ui/PrimaryButton';
+import ThematicContainer from '../ui/ThematicContainer';
 
 interface ReviewViewProps {
   videoBlob: Blob;

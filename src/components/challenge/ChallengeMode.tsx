@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import ThematicContainer from './ThematicContainer';
+import ThematicContainer from '../ui/ThematicContainer';
 import ChallengeCompletion from './ChallengeCompletion';
 
 interface Challenge {

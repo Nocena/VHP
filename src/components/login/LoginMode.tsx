@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import PrimaryButton from './PrimaryButton';
+import PrimaryButton from '../ui/PrimaryButton';
 
 interface LoginModeProps {
   onSuccess: (token: string) => void;

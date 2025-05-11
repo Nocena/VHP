@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import PrimaryButton from './PrimaryButton';
+import PrimaryButton from '../ui/PrimaryButton';
 
 interface SelfieViewProps {
   onStatusChange?: (status: string) => void;

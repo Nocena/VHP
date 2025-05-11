@@ -2,9 +2,9 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import ThematicContainer from './ThematicContainer';
-import ChallengeMode from './ChallengeMode';
-import LoginMode from './LoginMode';
+import ThematicContainer from './ui/ThematicContainer';
+import ChallengeMode from './challenge/ChallengeMode';
+import LoginMode from './login/LoginMode';
 
 export interface VHPCaptchaProps {
   onVerified: (token: string) => void;
