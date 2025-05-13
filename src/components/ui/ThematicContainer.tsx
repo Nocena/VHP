@@ -1,6 +1,6 @@
 import React from 'react';
 
-type ThematicColor = 'nocenaPink' | 'nocenaPurple' | 'nocenaBlue';
+type ThematicColor = 'nocenaPink' | 'nocenaPurple' | 'nocenaBlue' | 'nocenaGreen' | 'nocenaRed';
 
 interface Props {
   disabled?: boolean;
@@ -35,6 +35,10 @@ const ThematicContainer: React.FC<Props> = ({
         return '#6024FB';
       case 'nocenaBlue':
         return '#2353FF';
+      case 'nocenaGreen':
+        return '#00FFB3'; // Bright neon green that complements the existing palette
+      case 'nocenaRed':
+        return '#FF3D00'; // Vibrant neon red that contrasts well with the other colors
       default:
         return '#2353FF';
     }

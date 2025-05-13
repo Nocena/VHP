@@ -21,6 +21,7 @@
     "test": "echo 'No tests yet'"
   },
   "dependencies": {
+    "face-api.js": "^0.22.2",
     "framer-motion": "^11.0.0",
     "react-webcam": "^7.2.0"
   },
