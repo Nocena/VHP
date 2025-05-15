@@ -14,8 +14,22 @@ interface Challenge {
 interface ChallengeCompletionProps {
   challenge: Challenge;
   walletAddress: string;
-  onComplete: (videoBlob: Blob, selfieBlob: Blob) => void;
+  onComplete: (videoBlob: Blob, selfieBlob: Blob, faceData?: any) => void;
   onBack: () => void;
+}
+
+// Interface for face data including vibe check
+interface FaceData {
+  isHuman: boolean;
+  confidence: number;
+  faceVector?: string;
+  vibeCheck?: {
+    requestedEmotion?: string;
+    dominantEmotion: string;
+    matchScore: number;
+    passed: boolean;
+    message: string;
+  };
 }
 
 const ChallengeCompletion: React.FC<ChallengeCompletionProps> = ({
@@ -27,6 +41,7 @@ const ChallengeCompletion: React.FC<ChallengeCompletionProps> = ({
   const [stage, setStage] = useState<'video' | 'selfie' | 'review'>('video');
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
   const [selfieBlob, setSelfieBlob] = useState<Blob | null>(null);
+  const [faceData, setFaceData] = useState<FaceData | null>(null);
   const [status, setStatus] = useState<string>('');
 
   const handleVideoComplete = (blob: Blob) => {
@@ -34,16 +49,29 @@ const ChallengeCompletion: React.FC<ChallengeCompletionProps> = ({
     setStage('selfie');
   };
 
-  const handleSelfieCapture = (media: { file: File }) => {
+  const handleSelfieCapture = (media: { 
+    type: 'selfie'; 
+    file: File; 
+    isFrontCamera: boolean;
+    faceData?: FaceData;
+  }) => {
     // Convert File to Blob
     const blob = new Blob([media.file], { type: media.file.type });
     setSelfieBlob(blob);
+    
+    // Store face data if provided
+    if (media.faceData) {
+      setFaceData(media.faceData);
+      console.log('Received face data with vibe check:', media.faceData);
+    }
+    
     setStage('review');
   };
 
   const handleSubmit = () => {
     if (videoBlob && selfieBlob) {
-      onComplete(videoBlob, selfieBlob);
+      // Pass the face data to the completion handler
+      onComplete(videoBlob, selfieBlob, faceData);
     }
   };
 
@@ -51,6 +79,7 @@ const ChallengeCompletion: React.FC<ChallengeCompletionProps> = ({
     if (stage === 'selfie') {
       // Go back to video recording
       setSelfieBlob(null);
+      setFaceData(null);
       setStage('video');
     } else if (stage === 'review') {
       // Go back to selfie
@@ -64,11 +93,13 @@ const ChallengeCompletion: React.FC<ChallengeCompletionProps> = ({
   const handleRestartVideo = () => {
     setVideoBlob(null);
     setSelfieBlob(null);
+    setFaceData(null);
     setStage('video');
   };
 
   const handleRetakeSelfie = () => {
     setSelfieBlob(null);
+    setFaceData(null);
     setStage('selfie');
   };
 
@@ -96,6 +127,7 @@ const ChallengeCompletion: React.FC<ChallengeCompletionProps> = ({
           <ReviewView
             videoBlob={videoBlob}
             selfieBlob={selfieBlob}
+            faceData={faceData || undefined}
             onSubmit={handleSubmit}
             onRetakeVideo={handleRestartVideo}
             onRetakeSelfie={handleRetakeSelfie}
