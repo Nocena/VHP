@@ -1,8 +1,9 @@
+// ChallengeMode.tsx
 'use client';
 
 import React, { useState } from 'react';
 import ThematicContainer from '../ui/ThematicContainer';
-import ChallengeCompletion from './ChallengeCompletion';
+import MoodChallengeCompletion from './MoodChallengeCompletion';
 
 interface Challenge {
   id: string;
@@ -10,6 +11,7 @@ interface Challenge {
   description: string;
   color: 'nocenaPink' | 'nocenaPurple' | 'nocenaBlue';
   profileImage: string;
+  reward: number;
 }
 
 interface ChallengeModeProps {
@@ -34,24 +36,27 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
   const challenges: Challenge[] = [
     { 
       id: '1', 
-      title: 'Touch Grass', 
-      description: 'Go outside and touch some grass',
+      title: 'Vibe check', 
+      description: 'Simply match the random vibe with a selfie',
       color: 'nocenaPink',
-      profileImage: '/images/1.jpg'
+      profileImage: '/images/1.jpg',
+      reward: 1
     },
     { 
       id: '2', 
-      title: 'High-five Yourself', 
-      description: 'Give yourself a high-five in the mirror',
+      title: 'Mood mashup', 
+      description: 'You will be given two moods you have to try to match at the same time',
       color: 'nocenaPurple',
-      profileImage: '/images/2.jpg'
+      profileImage: '/images/2.jpg',
+      reward: 5
     },
     { 
       id: '3', 
-      title: 'Do 3 Squats', 
-      description: 'Complete 3 squats',
+      title: 'Mood attack', 
+      description: 'Match at least 10 moods in 30 second time period',
       color: 'nocenaBlue',
-      profileImage: '/images/3.jpg'
+      profileImage: '/images/3.jpg',
+      reward: 25
     },
   ];
 
@@ -101,20 +106,6 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
             />
           </div>
 
-          {/* Wallet Input Section */}
-          <div className="mb-6">
-            <p className="text-sm text-gray-300 text-center mb-3">
-              Enter your EVM wallet address if you want to be rewarded with Nocenix
-            </p>
-            <input
-              type="text"
-              value={walletAddress}
-              onChange={(e) => setWalletAddress(e.target.value)}
-              placeholder="0x..."
-              className="w-full px-4 py-3 bg-gray-800/50 border border-gray-600 rounded-xl text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
-            />
-          </div>
-
           {/* Challenges - Full Width */}
           <div className="w-full space-y-4">
             {challenges.map((challenge) => (
@@ -155,7 +146,7 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
                     className="px-4 py-1"
                   >
                     <div className="flex items-center space-x-1">
-                      <span className="text-xl font-semibold">1</span>
+                      <span className="text-xl font-semibold">{challenge.reward}</span>
                       <img src="/nocenix.ico" alt="Nocenix" width={24} height={24} />
                     </div>
                   </ThematicContainer>
@@ -167,7 +158,7 @@ const ChallengeMode: React.FC<ChallengeModeProps> = ({
       )}
 
       {stage === 'capture' && selectedChallenge && (
-        <ChallengeCompletion
+        <MoodChallengeCompletion
           challenge={selectedChallenge}
           walletAddress={walletAddress}
           onComplete={handleChallengeComplete}

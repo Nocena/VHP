@@ -70,7 +70,7 @@ const VHPCaptcha: React.FC<VHPCaptchaProps> = ({
           {mode === 'initial' && (
             <div className="w-full">
               <h2 className="text-2xl font-medium text-center mb-6 text-white">
-                Verify you're a human
+                MoodFi
               </h2>
               
               <div className="flex gap-4 justify-center px-8">
@@ -102,7 +102,7 @@ const VHPCaptcha: React.FC<VHPCaptchaProps> = ({
                   className="w-[120px] py-3 px-4 text-center h-[48px] flex items-center justify-center"
                   onClick={() => setMode('challenge')}
                 >
-                  <span className="text-base font-medium">Challenge</span>
+                  <span className="text-base font-medium">Lets vibe</span>
                 </ThematicContainer>
               </div>
             </div>

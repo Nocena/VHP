@@ -61,7 +61,7 @@ const LoginMode: React.FC<LoginModeProps> = ({
       {stage === 'login' && (
         <>
           <div className="mb-6 flex justify-center">
-            <img 
+            <img
               src="/images/logo-full.png" 
               alt="Nocena" 
               className="h-16 object-contain"
@@ -70,7 +70,7 @@ const LoginMode: React.FC<LoginModeProps> = ({
           
           {/* Description Text */}
           <p className="text-center text-gray-300 mb-8 text-sm px-4 font-thin">
-            Login to your account. You must have completed at least 1 challenge.
+            Login to your account to share results with your followers!
           </p>
 
           {/* Login Form - Conjoined inputs */}

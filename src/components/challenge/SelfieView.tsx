@@ -1,4 +1,4 @@
-// Updated SelfieView with Vibe Check Feature
+// SelfieView.tsx - Component for the first challenge (vibe check)
 import React, { useRef, useState, useEffect } from 'react';
 import PrimaryButton from '../ui/PrimaryButton';
 import { 
