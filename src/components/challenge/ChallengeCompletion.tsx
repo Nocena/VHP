@@ -1,5 +1,7 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import VideoRecording from './VideoRecording';
+import VideoRecording from './video'; // Updated import path
 import SelfieView from './SelfieView';
 import ReviewView from './ReviewView';
 
@@ -14,7 +16,7 @@ interface Challenge {
 interface ChallengeCompletionProps {
   challenge: Challenge;
   walletAddress: string;
-  onComplete: (videoBlob: Blob, selfieBlob: Blob, faceData?: any) => void;
+  onComplete: (mediaBlob: Blob, faceData?: any) => void;
   onBack: () => void;
 }
 
@@ -38,15 +40,23 @@ const ChallengeCompletion: React.FC<ChallengeCompletionProps> = ({
   onComplete,
   onBack,
 }) => {
-  const [stage, setStage] = useState<'video' | 'selfie' | 'review'>('video');
+  // Determine if this challenge is video-only based on challenge id
+  const isVideoChallenge = challenge.id === '3';
+  
+  // Initial stage based on challenge type
+  const initialStage = isVideoChallenge ? 'video' : 'selfie';
+  
+  const [stage, setStage] = useState<'video' | 'selfie' | 'review'>(initialStage);
   const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
   const [selfieBlob, setSelfieBlob] = useState<Blob | null>(null);
   const [faceData, setFaceData] = useState<FaceData | null>(null);
   const [status, setStatus] = useState<string>('');
 
   const handleVideoComplete = (blob: Blob) => {
+    console.log('Video completion handler called with blob size:', blob.size);
     setVideoBlob(blob);
-    setStage('selfie');
+    // For video challenges, go straight to review
+    setStage('review');
   };
 
   const handleSelfieCapture = (media: { 
@@ -62,38 +72,33 @@ const ChallengeCompletion: React.FC<ChallengeCompletionProps> = ({
     // Store face data if provided
     if (media.faceData) {
       setFaceData(media.faceData);
-      console.log('Received face data with vibe check:', media.faceData);
     }
     
+    // For selfie challenges, go straight to review
     setStage('review');
   };
 
   const handleSubmit = () => {
-    if (videoBlob && selfieBlob) {
-      // Pass the face data to the completion handler
-      onComplete(videoBlob, selfieBlob, faceData);
+    // Submit the appropriate media blob based on challenge type
+    if (isVideoChallenge && videoBlob) {
+      onComplete(videoBlob, faceData);
+    } else if (!isVideoChallenge && selfieBlob) {
+      onComplete(selfieBlob, faceData);
     }
   };
 
   const handleBack = () => {
-    if (stage === 'selfie') {
-      // Go back to video recording
-      setSelfieBlob(null);
-      setFaceData(null);
-      setStage('video');
-    } else if (stage === 'review') {
-      // Go back to selfie
-      setStage('selfie');
+    if (stage === 'review') {
+      // Go back to the appropriate capture stage
+      setStage(isVideoChallenge ? 'video' : 'selfie');
     } else {
-      // In video stage, go back to challenge selection
+      // In capture stage, go back to challenge selection
       onBack();
     }
   };
 
-  const handleRestartVideo = () => {
+  const handleRetakeVideo = () => {
     setVideoBlob(null);
-    setSelfieBlob(null);
-    setFaceData(null);
     setStage('video');
   };
 
@@ -123,14 +128,15 @@ const ChallengeCompletion: React.FC<ChallengeCompletionProps> = ({
           />
         )}
 
-        {stage === 'review' && videoBlob && selfieBlob && (
+        {stage === 'review' && (
           <ReviewView
-            videoBlob={videoBlob}
-            selfieBlob={selfieBlob}
+            videoBlob={isVideoChallenge ? videoBlob : null}
+            selfieBlob={!isVideoChallenge ? selfieBlob : null}
             faceData={faceData || undefined}
             onSubmit={handleSubmit}
-            onRetakeVideo={handleRestartVideo}
-            onRetakeSelfie={handleRetakeSelfie}
+            onRetakeVideo={isVideoChallenge ? handleRetakeVideo : undefined}
+            onRetakeSelfie={!isVideoChallenge ? handleRetakeSelfie : undefined}
+            isVideoChallenge={isVideoChallenge}
           />
         )}
       </div>
